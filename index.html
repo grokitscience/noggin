@@ -330,6 +330,8 @@ button.primary:hover { background: #444; }
   flex-direction: column;
   overflow: hidden;
   cursor: pointer;
+  touch-action: manipulation;          /* eliminate 300ms tap-delay on iOS/Android */
+  -webkit-tap-highlight-color: transparent;
   transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
 }
 .puzzle-card:hover {
@@ -1172,13 +1174,20 @@ const difficultyClass = {
 // Draw a mini thumbnail onto a canvas.
 // If cageDefs supplied: draws actual cage boundaries. Otherwise: generic grid lines.
 function drawThumb(canvas, N, cageDefs) {
-  const SZ = 240;
-  canvas.width = SZ; canvas.height = SZ;
+  // Match canvas internal resolution to its actual display size × device pixel ratio
+  // so the thumbnail looks sharp on Retina/HiDPI screens.
+  const dpr   = window.devicePixelRatio || 1;
+  const rect  = canvas.getBoundingClientRect();
+  const logSZ = Math.round(rect.width) || 240;   // CSS display size in logical px
+  const SZ    = Math.round(logSZ * dpr);          // physical pixels
+  canvas.width  = SZ;
+  canvas.height = SZ;
   const ctx = canvas.getContext('2d');
-  const pad = 14, total = SZ - 2 * pad, cell = total / N;
+  ctx.scale(dpr, dpr);                            // draw in logical px throughout
+  const pad = 14, total = logSZ - 2 * pad, cell = total / N;
 
   ctx.fillStyle = '#fff';
-  ctx.fillRect(0, 0, SZ, SZ);
+  ctx.fillRect(0, 0, logSZ, logSZ);
 
   if (cageDefs) {
     const idx = {};
@@ -1194,7 +1203,7 @@ function drawThumb(canvas, N, cageDefs) {
           if (side === 'right')  { ctx.moveTo(x+cell,   y);      ctx.lineTo(x+cell, y+cell); }
           if (side === 'bottom') { ctx.moveTo(x,        y+cell); ctx.lineTo(x+cell, y+cell); }
           if (side === 'left')   { ctx.moveTo(x,        y);      ctx.lineTo(x,      y+cell); }
-          if (outside || diff) { ctx.strokeStyle = '#2c2c2c'; ctx.lineWidth = Math.max(2, SZ*0.013); }
+          if (outside || diff) { ctx.strokeStyle = '#2c2c2c'; ctx.lineWidth = Math.max(2, logSZ*0.013); }
           else                 { ctx.strokeStyle = '#d5cfc8'; ctx.lineWidth = 0.8; }
           ctx.stroke();
         });
