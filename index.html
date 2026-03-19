@@ -657,6 +657,94 @@ footer {
   .about-mascot { display: none; }
   .mascot-blocko { display: none; }
 }
+
+/* ─── Phone-sized grids (4×4 / 5×5 / 6×6) ──────────────────────── */
+/* Target iPhones and similar: scale cells so the grid fits the viewport.
+   Available width ≈ 100vw − 2rem padding ≈ 343px on a 375px iPhone.
+   Cell sizes chosen so N×cell ≤ 304px, leaving a comfortable margin.  */
+@media (max-width: 500px) {
+  .puzzle-wrap { overflow-x: auto; }   /* safety net for any remaining overflow */
+
+  .grid-4 {
+    grid-template-columns: repeat(4, 74px);
+    grid-template-rows:    repeat(4, 74px);
+  }
+  .grid-4 .cell       { width: 74px; height: 74px; font-size: 1.35rem; }
+  .grid-4 .cage-label { font-size: 0.6rem; }
+
+  .grid-5 {
+    grid-template-columns: repeat(5, 59px);
+    grid-template-rows:    repeat(5, 59px);
+  }
+  .grid-5 .cell       { width: 59px; height: 59px; font-size: 1.1rem; }
+  .grid-5 .cage-label { font-size: 0.5rem; }
+
+  .grid-6 {
+    grid-template-columns: repeat(6, 49px);
+    grid-template-rows:    repeat(6, 49px);
+  }
+  .grid-6 .cell       { width: 49px; height: 49px; font-size: 0.95rem; }
+  .grid-6 .cage-label { font-size: 0.42rem; }
+
+  .dyn-notes input  { width: 120px; }
+  .dyn-notes textarea { font-size: 0.82rem; }
+}
+
+/* ─── On-screen touch keyboard (coarse-pointer devices only) ────── */
+#touch-kbd {
+  display: none;           /* hidden by default everywhere */
+}
+@media (pointer: coarse) {
+  #touch-kbd {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: #e8e0d8;
+    border-top: 2px solid var(--border);
+    padding: 8px 12px 12px;
+    gap: 8px;
+    justify-content: center;
+    align-items: stretch;
+    /* hidden until a cell is selected */
+    transform: translateY(100%);
+    transition: transform 0.18s ease;
+  }
+  #touch-kbd.visible {
+    transform: translateY(0);
+  }
+  .tkbd-btn {
+    flex: 1;
+    max-width: 72px;
+    min-height: 52px;
+    font-family: var(--font-head);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ink);
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    transition: background 0.08s, transform 0.08s;
+  }
+  .tkbd-btn:active {
+    background: var(--border);
+    transform: scale(0.93);
+  }
+  .tkbd-del {
+    flex: 0.7;
+    font-size: 1.5rem;
+    color: var(--coral);
+  }
+  /* push body content up so the keyboard doesn't overlap the bottom of the page */
+  body.kbd-open { padding-bottom: 80px; }
+}
 </style>
 </head>
 <body>
@@ -694,7 +782,7 @@ footer {
         <button onclick="clearGrid()">Clear All</button>
       </div>
       <div class="puzzle-message hidden" id="message"></div>
-      <p class="puzzle-hint">Click a cell, then type 1, 2, or 3 &nbsp;·&nbsp; Arrow keys to navigate &nbsp;·&nbsp; Backspace to clear<br></p>
+      <p class="puzzle-hint">Click a cell, then type 1, 2, or 3 &nbsp;·&nbsp; Arrow keys to navigate &nbsp;·&nbsp; Backspace to clear</p>
     </div>
 
     <!-- Dognoggin mascot -->
@@ -996,6 +1084,11 @@ footer {
 <footer>
   © 2026 GrokIt.Science &nbsp;·&nbsp; Noggin puzzles &nbsp;·&nbsp; Made with curiosity
 </footer>
+
+<!-- On-screen number bar — shown on touch devices when a cell is selected. -->
+<div id="touch-kbd" aria-hidden="true" role="group" aria-label="Number keys">
+  <!-- Buttons are built dynamically by showTouchKbd(n) -->
+</div>
 
 <!-- ─── Puzzle data ─────────────────────────────────────────────── -->
 <script>
@@ -1315,6 +1408,7 @@ function selectCell(r, c) {
   selectedCell = [r, c];
   getCell(r, c).classList.add('selected');
   hideMessage();
+  showTouchKbd(N);
 }
 
 function setCellValue(r, c, val) {
@@ -1330,7 +1424,57 @@ function setCellValue(r, c, val) {
   }
 }
 
+// ─── On-screen touch keyboard ────────────────────────────────────────────────
+const touchKbd = document.getElementById('touch-kbd');
+let   touchKbdN = 0;
+
+function showTouchKbd(n) {
+  if (n !== touchKbdN) {
+    // Rebuild buttons for this grid size
+    touchKbd.innerHTML = '';
+    for (let d = 1; d <= n; d++) {
+      const btn = document.createElement('button');
+      btn.className = 'tkbd-btn';
+      btn.dataset.val = d;
+      btn.textContent = d;
+      touchKbd.appendChild(btn);
+    }
+    const del = document.createElement('button');
+    del.className = 'tkbd-btn tkbd-del';
+    del.dataset.val = 'del';
+    del.textContent = '⌫';
+    touchKbd.appendChild(del);
+    touchKbdN = n;
+  }
+  touchKbd.classList.add('visible');
+  document.body.classList.add('kbd-open');
+}
+
+function hideTouchKbd() {
+  touchKbd.classList.remove('visible');
+  document.body.classList.remove('kbd-open');
+}
+
+// Route button presses to whichever cell is currently selected
+touchKbd.addEventListener('pointerdown', (e) => {
+  const btn = e.target.closest('.tkbd-btn');
+  if (!btn) return;
+  e.preventDefault();   // prevent focus change / page scroll
+  const val = btn.dataset.val;
+  if (dynSelected) {
+    const [r, c] = dynSelected;
+    if (val === 'del')                              { dynSetValue(r,c,null); dynValidate(); }
+    else if (val >= '1' && val <= String(dynN))     { dynSetValue(r,c,parseInt(val)); dynValidate(); }
+  } else if (selectedCell) {
+    const [r, c] = selectedCell;
+    if (val === 'del')                              { setCellValue(r,c,null); validateAll(); }
+    else if (val >= '1' && val <= String(N))        { setCellValue(r,c,parseInt(val)); glanceAt(r,c); validateAll(); }
+  }
+});
+
 document.addEventListener('keydown', (e) => {
+  // Never steal keystrokes from text fields (quip, comment textarea, etc.)
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
   // Dynamic panel input
   if (dynSelected) {
     const [r, c] = dynSelected;
@@ -1494,6 +1638,7 @@ function dynSelectCell(r, c) {
   dynSelected = [r, c];
   dynGetCell(r, c).classList.add('selected');
   dynHideMsg();
+  showTouchKbd(dynN);
 }
 
 function dynSetValue(r, c, val) {
@@ -1572,6 +1717,7 @@ function dynClear() {
 function dynClose() {
   document.getElementById('dyn-wrap').hidden = true;
   dynSelected = null; dynMeta = null; dynDef = null;
+  hideTouchKbd();
   document.querySelectorAll('.puzzle-card.is-active').forEach(c => c.classList.remove('is-active'));
   document.getElementById('puzzleGrid').scrollIntoView({behavior: 'smooth', block: 'start'});
 }
