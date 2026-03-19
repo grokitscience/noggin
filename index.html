@@ -823,6 +823,8 @@ footer {
         <!-- Legs (drawn first so body overlaps their tops) -->
         <rect x="17" y="68" width="21" height="30" rx="10" fill="#b08a54"/>
         <rect x="52" y="68" width="21" height="30" rx="10" fill="#b08a54"/>
+        <!-- Tail (behind body) -->
+        <path d="M80 55 Q95 45 88 35" stroke="#b08a54" stroke-width="8" fill="none" stroke-linecap="round"/>
         <!-- Body -->
         <rect x="10" y="22" width="70" height="58" rx="14" fill="#c8a26a"/>
         <!-- Left ear -->
@@ -849,8 +851,6 @@ footer {
           <ellipse cx="45" cy="86" rx="13" ry="17" fill="#e07a7a"/>
           <line x1="45" y1="72" x2="45" y2="101" stroke="#c05060" stroke-width="1.5" stroke-linecap="round"/>
         </g>
-        <!-- Tail (right side, sticking out) -->
-        <path d="M80 55 Q95 45 88 35" stroke="#b08a54" stroke-width="8" fill="none" stroke-linecap="round"/>
         </svg>
       </div>
       <div class="puzzle-message hidden" id="message"></div>
@@ -1861,9 +1861,10 @@ function loadPuzzle(meta) {
 
 // ── Puzzli stand/sit animation ────────────────────────────────────────────────
 // Each cycle is a sequence of named phases built in pickModes().
-// Plain cycle:  STAND → SIDLE_IN → HOLD → SIDLE_OUT → SIT
-// Wiggle cycle: STAND → SIDLE_IN → HOLD → WIGGLE_OUT → WIGGLE_BACK → HOLD_2 → SIDLE_OUT → SIT
-// 35% of cycles are wiggle cycles.  Wiggle direction is independent and random.
+// Plain cycle:  STAND → FAKE_SIT_IN → FAKE_SIT_OUT → HOLD → SIT
+// Wiggle cycle: STAND → FAKE_SIT_IN → FAKE_SIT_OUT → HOLD → WIGGLE_OUT → WIGGLE_BACK → HOLD_2 → SIT
+// FAKE_SIT: legs partially fold as if beginning to sit, then spring back — surprise, just sidling!
+// 55% of cycles are wiggle cycles.  Wiggle direction is independent and random.
 // Stand ankle: 65% left-first, 35% right-first.
 // Sit   ankle: 50% left-first, 50% right-first.
 // Pause between cycles: random 10–35 s.
@@ -1901,10 +1902,9 @@ function loadPuzzle(meta) {
     return rotPt(p1.x, p1.y, s2 * beta_rad, P2.x, P2.y);
   }
 
-  // sf = sidle fraction (0 = natural lean, 1 = legs vertical)
-  // wx = extra horizontal wiggle offset in px
+  // wx = extra horizontal wiggle offset in px (sf param kept for call-site compat, ignored)
   function applyState(a_deg, b_deg, sf, wx) {
-    const sx = sidleX * sf + wx;
+    const sx = wx;
     bodyGrp.setAttribute('transform',
       `translate(${sx.toFixed(4)},0) ` +
       `translate(${P2.x},${P2.y}) rotate(${(s2 * b_deg).toFixed(4)}) translate(${-P2.x},${-P2.y}) ` +
@@ -1937,6 +1937,7 @@ function loadPuzzle(meta) {
     const finalLA = tfPt(LA.x, LA.y, MAX_RAD, MAX_RAD, P1, P2, s1, s2);
     sidleX = LA.x - finalLA.x;
 
+    const MAX_SF    = 0.45;   // cap sidle travel — subtler hip sway, no wide body swing
     const doWiggle  = Math.random() < 0.55;
     const wiggleDir = Math.random() < 0.5 ? 1 : -1;
 
@@ -1946,9 +1947,9 @@ function loadPuzzle(meta) {
       b:  t < 0.5 ? 0                  : eio((t-0.5)*2) * MAX_DEG,
       sf: 0, wx: 0 }) };
 
-    const sidleIn  = { dur: SIDLE_IN,  fn: t => ({ a: MAX_DEG, b: MAX_DEG, sf: esin(t),     wx: 0 }) };
-    const hold     = { dur: HOLD,      fn: _ => ({ a: MAX_DEG, b: MAX_DEG, sf: 1,            wx: 0 }) };
-    const sidleOut = { dur: SIDLE_OUT, fn: t => ({ a: MAX_DEG, b: MAX_DEG, sf: 1 - esin(t), wx: 0 }) };
+    const sidleIn  = { dur: SIDLE_IN,  fn: t => ({ a: MAX_DEG, b: MAX_DEG, sf: esin(t) * MAX_SF,      wx: 0 }) };
+    const hold     = { dur: HOLD,      fn: _ => ({ a: MAX_DEG, b: MAX_DEG, sf: MAX_SF,                 wx: 0 }) };
+    const sidleOut = { dur: SIDLE_OUT, fn: t => ({ a: MAX_DEG, b: MAX_DEG, sf: MAX_SF * (1 - esin(t)), wx: 0 }) };
 
     const sit = { dur: SIT, fn: t => {
       let a, b;
@@ -1962,9 +1963,9 @@ function loadPuzzle(meta) {
       return { a, b, sf: 0, wx: 0 };
     }};
 
-    const wiggleOut  = { dur: WIGGLE_OUT,  fn: t => ({ a: MAX_DEG, b: MAX_DEG, sf: 1, wx:  wiggleDir * WIGGLE_DIST * esin(t) }) };
-    const wiggleBack = { dur: WIGGLE_BACK, fn: t => ({ a: MAX_DEG, b: MAX_DEG, sf: 1, wx:  wiggleDir * WIGGLE_DIST * (1 - esin(t)) }) };
-    const hold2      = { dur: HOLD_2,      fn: _ => ({ a: MAX_DEG, b: MAX_DEG, sf: 1, wx: 0 }) };
+    const wiggleOut  = { dur: WIGGLE_OUT,  fn: t => ({ a: MAX_DEG, b: MAX_DEG, sf: MAX_SF, wx:  wiggleDir * WIGGLE_DIST * esin(t) }) };
+    const wiggleBack = { dur: WIGGLE_BACK, fn: t => ({ a: MAX_DEG, b: MAX_DEG, sf: MAX_SF, wx:  wiggleDir * WIGGLE_DIST * (1 - esin(t)) }) };
+    const hold2      = { dur: HOLD_2,      fn: _ => ({ a: MAX_DEG, b: MAX_DEG, sf: MAX_SF, wx: 0 }) };
 
     phases = doWiggle
       ? [stand, sidleIn, hold, wiggleOut, wiggleBack, hold2, sidleOut, sit]
