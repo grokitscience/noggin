@@ -146,16 +146,9 @@ h2 {
   margin-bottom: 1rem;
 }
 
-.play-panel-group {
-  display: flex;
-  align-items: flex-end;
-  gap: 0.75rem;
-}
 
 .mascot-blocko {
   transform: rotate(-3deg);
-  flex-shrink: 0;
-  margin-bottom: 0.5rem;
 }
 
 @keyframes headShake {
@@ -231,7 +224,25 @@ h2 {
   border-bottom: 1px solid #ddd;
 }
 .cell:hover   { background: #f0f4fa; }
-.cell.selected { background: #d4e4f7; }
+
+/* Selected cell: coral disk floats above any background/error color.
+   cage-label (position:absolute) and .value (position:relative) both
+   sit above the ::before disk by source order within the same stacking context. */
+.cell.selected::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 62%; aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--coral);
+  pointer-events: none;
+}
+.cell.selected .value {
+  position: relative;   /* ensures it stacks above the ::before disk */
+  color: #fff;
+}
+
 .cell.error     { background: #fce4e4; }
 .cell.cage-warn { background: #fde4c0; } /* amber — cage constraint violated  */
 .cell.warn      { background: #fff3cd; } /* yellow — row or column conflict   */
@@ -250,13 +261,35 @@ h2 {
   text-align: left;
 }
 
-.controls {
-  margin-top: 1.2rem;
+.grid-with-clear {
   display: flex;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
 }
+.grid-with-clear .btn-clear {
+  margin-top: 0.35rem;
+}
+
+.dog-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.35rem;
+}
+
+.btn-clear {
+  padding: 0;
+  font-size: 0.72rem;
+  font-weight: 600;
+  font-family: var(--font-head);
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: underline dotted;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-clear:hover { color: var(--coral); background: none; }
 
 button {
   padding: 0.55rem 1.2rem;
@@ -288,7 +321,7 @@ button.primary:hover { background: #444; }
 .puzzle-message.hidden      { visibility: hidden; }
 
 .puzzle-hint {
-  margin-top: 1rem;
+  margin-bottom: 0.6rem;
   font-size: 0.75rem;
   color: var(--muted);
   text-align: center;
@@ -777,51 +810,51 @@ footer {
       </div>
     </div>
 
-    <div class="play-panel-group">
     <div class="puzzle-wrap">
-      <div class="grid" id="grid"></div>
-      <div class="controls">
-        <button onclick="clearGrid()">Clear All</button>
+      <p class="puzzle-hint">Click a cell · type 1, 2, or 3 · Backspace to clear</p>
+      <div class="grid-with-clear">
+        <div class="grid" id="grid"></div>
+        <button class="btn-clear" onclick="clearGrid()">clear</button>
+      </div>
+
+      <div class="dog-row">
+        <!-- Dognoggin watches from just below the grid -->
+        <svg class="mascot-blocko" width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Dognoggin the blob dog" style="overflow:visible; display:block; margin:0 auto;">
+        <!-- Legs (drawn first so body overlaps their tops) -->
+        <rect x="17" y="68" width="21" height="30" rx="10" fill="#b08a54"/>
+        <rect x="52" y="68" width="21" height="30" rx="10" fill="#b08a54"/>
+        <!-- Body -->
+        <rect x="10" y="22" width="70" height="58" rx="14" fill="#c8a26a"/>
+        <!-- Left ear -->
+        <rect x="10" y="10" width="20" height="22" rx="8" fill="#b08a54"/>
+        <!-- Right ear -->
+        <rect x="60" y="10" width="20" height="22" rx="8" fill="#b08a54"/>
+        <!-- Eyes — whites enlarged for more expressive pupil travel -->
+        <circle cx="30" cy="41" r="9" fill="#fff"/>
+        <circle cx="60" cy="41" r="9" fill="#fff"/>
+        <g class="pupil-left">
+          <circle cx="30" cy="42" r="5" fill="#2c2c2c"/>
+          <circle cx="32" cy="40" r="1.5" fill="#fff"/>
+        </g>
+        <g class="pupil-right">
+          <circle cx="60" cy="42" r="5" fill="#2c2c2c"/>
+          <circle cx="62" cy="40" r="1.5" fill="#fff"/>
+        </g>
+        <!-- Nose -->
+        <ellipse cx="45" cy="56" rx="6" ry="4" fill="#8a6030"/>
+        <!-- Mouth -->
+        <path d="M39 62 Q45 68 51 62" stroke="#8a6030" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Tongue (slides up to eye level during win jump) -->
+        <g class="dog-tongue">
+          <ellipse cx="45" cy="86" rx="13" ry="17" fill="#e07a7a"/>
+          <line x1="45" y1="72" x2="45" y2="101" stroke="#c05060" stroke-width="1.5" stroke-linecap="round"/>
+        </g>
+        <!-- Tail (right side, sticking out) -->
+        <path d="M80 55 Q95 45 88 35" stroke="#b08a54" stroke-width="8" fill="none" stroke-linecap="round"/>
+        </svg>
       </div>
       <div class="puzzle-message hidden" id="message"></div>
-      <p class="puzzle-hint">Click a cell, then type 1, 2, or 3 &nbsp;·&nbsp; Arrow keys to navigate &nbsp;·&nbsp; Backspace to clear</p>
     </div>
-
-    <!-- Dognoggin mascot -->
-    <svg class="mascot-blocko" width="90" height="90" viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Dognoggin the blob dog" style="overflow:visible">
-      <!-- Legs (drawn first so body overlaps their tops) -->
-      <rect x="17" y="68" width="21" height="30" rx="10" fill="#b08a54"/>
-      <rect x="52" y="68" width="21" height="30" rx="10" fill="#b08a54"/>
-      <!-- Body -->
-      <rect x="10" y="22" width="70" height="58" rx="14" fill="#c8a26a"/>
-      <!-- Left ear -->
-      <rect x="10" y="10" width="20" height="22" rx="8" fill="#b08a54"/>
-      <!-- Right ear -->
-      <rect x="60" y="10" width="20" height="22" rx="8" fill="#b08a54"/>
-      <!-- Eyes -->
-      <circle cx="30" cy="42" r="6" fill="#fff"/>
-      <circle cx="60" cy="42" r="6" fill="#fff"/>
-      <g class="pupil-left">
-        <circle cx="29" cy="43" r="3" fill="#2c2c2c"/>
-        <circle cx="30" cy="42" r="1" fill="#fff"/>
-      </g>
-      <g class="pupil-right">
-        <circle cx="59" cy="43" r="3" fill="#2c2c2c"/>
-        <circle cx="60" cy="42" r="1" fill="#fff"/>
-      </g>
-      <!-- Nose -->
-      <ellipse cx="45" cy="56" rx="6" ry="4" fill="#8a6030"/>
-      <!-- Mouth -->
-      <path d="M39 62 Q45 68 51 62" stroke="#8a6030" stroke-width="2" fill="none" stroke-linecap="round"/>
-      <!-- Tongue (slides up to eye level during win jump) -->
-      <g class="dog-tongue">
-        <ellipse cx="45" cy="86" rx="13" ry="17" fill="#e07a7a"/>
-        <line x1="45" y1="72" x2="45" y2="101" stroke="#c05060" stroke-width="1.5" stroke-linecap="round"/>
-      </g>
-      <!-- Tail (right side, sticking out) -->
-      <path d="M80 55 Q95 45 88 35" stroke="#b08a54" stroke-width="8" fill="none" stroke-linecap="round"/>
-    </svg>
-    </div><!-- /.play-panel-group -->
   </div>
 
   <!-- ── Dynamic puzzle panel — populated by JS when a card is clicked ── -->
@@ -1046,31 +1079,31 @@ footer {
       <!-- Excited "ooh!" mouth — open oval -->
       <ellipse cx="60" cy="52" rx="7" ry="5" fill="#1e7068"/>
       <!-- 5 tentacles rooted 10px inside the body so the join looks fleshy -->
-      <path d="M18 58 Q12 101 19 152" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
+      <path d="M18 58 Q13 92 19 133" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
         <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite"
           values="0,18,58; 13,18,58; 0,18,58; -13,18,58; 0,18,58"
           keyTimes="0;0.25;0.5;0.75;1" dur="1.8s" begin="0s"
           calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"/>
       </path>
-      <path d="M37 60 Q33 103 38 150" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
+      <path d="M37 60 Q34 94 38 132" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
         <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite"
           values="0,37,60; 10,37,60; 0,37,60; -10,37,60; 0,37,60"
           keyTimes="0;0.25;0.5;0.75;1" dur="1.8s" begin="0.2s"
           calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"/>
       </path>
-      <path d="M60 62 Q60 105 60 152" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
+      <path d="M60 62 Q60 96 60 134" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
         <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite"
           values="0,60,62; 8,60,62; 0,60,62; -8,60,62; 0,60,62"
           keyTimes="0;0.25;0.5;0.75;1" dur="1.8s" begin="0.37s"
           calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"/>
       </path>
-      <path d="M83 60 Q87 103 82 150" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
+      <path d="M83 60 Q86 94 82 132" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
         <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite"
           values="0,83,60; 10,83,60; 0,83,60; -10,83,60; 0,83,60"
           keyTimes="0;0.25;0.5;0.75;1" dur="1.8s" begin="0.55s"
           calcMode="spline" keySplines="0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1;0.45 0 0.55 1"/>
       </path>
-      <path d="M102 58 Q108 101 101 152" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
+      <path d="M102 58 Q107 92 101 133" stroke="#3a9e8f" stroke-width="9" fill="none" stroke-linecap="round">
         <animateTransform attributeName="transform" type="rotate" repeatCount="indefinite"
           values="0,102,58; 13,102,58; 0,102,58; -13,102,58; 0,102,58"
           keyTimes="0;0.25;0.5;0.75;1" dur="1.8s" begin="0.7s"
@@ -1418,6 +1451,7 @@ function selectCell(r, c) {
   getCell(r, c).classList.add('selected');
   hideMessage();
   showTouchKbd(N);
+  glanceAt(r, c);
 }
 
 function setCellValue(r, c, val) {
@@ -1586,32 +1620,58 @@ function clearGrid() {
   for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) { setCellValue(r,c,null); getCell(r,c).classList.remove('error','correct','warn','cage-warn'); }
   if (blockoEl) blockoEl.classList.remove('shaking', 'licking');
   hideMessage();
+  glanceClear();
+  selectedCell = null;
 }
 
 const msgEl = document.getElementById('message');
 const blockoEl = document.querySelector('.mascot-blocko');
 
+// Eye white r=9, pupil r=5 → max travel = 4px before pupil edge touches white edge.
+// Use real screen positions so the direction is always accurate regardless of layout.
+const EYE_MAX_SHIFT = 3.8;   // px in SVG/CSS space; just inside the white edge
 let glanceTimer = null;
+
 function glanceAt(row, col) {
   const leftPupil  = blockoEl && blockoEl.querySelector('.pupil-left');
   const rightPupil = blockoEl && blockoEl.querySelector('.pupil-right');
   if (!leftPupil || !rightPupil) return;
-  // Dognoggin sits below-right of the grid.
-  // Model him at grid-cell position (N, N) — just outside the bottom-right corner.
-  // Direction from him to any cell is always some mix of up (−Y) and left (−X).
-  const dx = col - N;   // always negative: every cell is to his left
-  const dy = row - N;   // always negative: every cell is above him
+
+  const cellEl  = getCell(row, col);
+  const cellRect = cellEl.getBoundingClientRect();
+  const svgRect  = blockoEl.getBoundingClientRect();
+
+  // Target: centre of the cell
+  const targetX = cellRect.left + cellRect.width  / 2;
+  const targetY = cellRect.top  + cellRect.height / 2;
+
+  // Origin: where the eyes actually sit in screen space.
+  // Eyes are at cy=41 in a 90-unit-tall viewBox rendered at svgRect.height px.
+  const originX = svgRect.left + svgRect.width  / 2;
+  const originY = svgRect.top  + svgRect.height * (41 / 90);
+
+  const dx = targetX - originX;
+  const dy = targetY - originY;
   const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-  const maxShift = 2;
-  const tx = (dx / dist) * maxShift;
-  const ty = (dy / dist) * maxShift;
+  const tx = (dx / dist) * EYE_MAX_SHIFT;
+  const ty = (dy / dist) * EYE_MAX_SHIFT;
+
   leftPupil.style.transform  = `translate(${tx}px, ${ty}px)`;
   rightPupil.style.transform = `translate(${tx}px, ${ty}px)`;
+
+  // Revert to looking at the user after a short pause
   clearTimeout(glanceTimer);
-  glanceTimer = setTimeout(() => {
-    leftPupil.style.transform  = '';
-    rightPupil.style.transform = '';
-  }, 900);
+  glanceTimer = setTimeout(glanceClear, 1500);
+}
+
+function glanceClear() {
+  clearTimeout(glanceTimer);
+  glanceTimer = null;
+  const leftPupil  = blockoEl && blockoEl.querySelector('.pupil-left');
+  const rightPupil = blockoEl && blockoEl.querySelector('.pupil-right');
+  if (!leftPupil || !rightPupil) return;
+  leftPupil.style.transform  = '';
+  rightPupil.style.transform = '';
 }
 
 function showMessage(text, cls) {
