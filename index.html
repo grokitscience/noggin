@@ -285,6 +285,8 @@ h2 {
   border: none;
   color: var(--muted);
   cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   text-decoration: underline dotted;
   white-space: nowrap;
   flex-shrink: 0;
@@ -308,12 +310,12 @@ button.primary { background: var(--ink); color: var(--white); }
 button.primary:hover { background: #444; }
 
 .puzzle-message {
-  margin-top: 0.8rem;
+  margin-top: 0.4rem;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-size: 0.82rem;
   text-align: center;
-  min-height: 1.4rem;
+  min-height: 1.1rem;
   font-family: var(--font-head);
 }
 .puzzle-message.error-msg   { background: #fce4e4; color: #a33; }
@@ -321,7 +323,7 @@ button.primary:hover { background: #444; }
 .puzzle-message.hidden      { visibility: hidden; }
 
 .puzzle-hint {
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.3rem;
   font-size: 0.75rem;
   color: var(--muted);
   text-align: center;
@@ -384,6 +386,10 @@ button.primary:hover { background: #444; }
 .puzzle-card.is-active {
   border-color: var(--coral);
   box-shadow: 4px 4px 0 var(--coral);
+}
+.puzzle-card:not(.no-play):active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
 .card-thumb {
@@ -465,8 +471,8 @@ button.primary:hover { background: #444; }
   letter-spacing: 0.02em;
   transition: color 0.15s;
 }
-.prog-item.checked.prog-tried  { color: var(--green); }
-.prog-item.checked.prog-solved { color: var(--amber); }
+.prog-item.checked.prog-tried  { color: var(--amber); }
+.prog-item.checked.prog-solved { color: var(--green); }
 
 .card-quip {
   font-family: var(--font-head);
@@ -480,17 +486,20 @@ button.primary:hover { background: #444; }
 
 /* ─── Dyn-notes (quip + comment in play panel) ──────────────────── */
 .dyn-notes {
-  margin-top: 1.2rem;
+  margin-top: 0.3rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.45rem;
   max-width: 420px;
+  width: 100%;
 }
 .dyn-notes-row {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
 }
+.dyn-notes-row:has(textarea) { align-items: flex-start; }
 .dyn-notes-row label {
   font-family: var(--font-head);
   font-size: 0.72rem;
@@ -498,13 +507,10 @@ button.primary:hover { background: #444; }
   color: var(--muted);
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  min-width: 5rem;
+  flex-shrink: 0;
 }
-.dyn-notes-row .notes-limit {
-  font-weight: 400;
-  font-size: 0.65rem;
-  color: var(--border);
-  margin-left: 0.3rem;
-}
+.dyn-notes-row:has(textarea) label { padding-top: 0.38rem; }
 .dyn-notes input, .dyn-notes textarea {
   font-family: var(--font-body);
   font-size: 0.88rem;
@@ -515,10 +521,23 @@ button.primary:hover { background: #444; }
   color: var(--ink);
   outline: none;
   transition: border-color 0.15s;
+  flex: 1;
+  min-width: 0;
 }
-.dyn-notes input { width: 160px; }
-.dyn-notes textarea { width: 100%; resize: vertical; }
+.dyn-notes textarea { resize: vertical; }
 .dyn-notes input:focus, .dyn-notes textarea:focus { border-color: var(--coral); }
+
+/* ─── Dyn-inner: column wrapper that locks grid + labels to same left edge ── */
+.dyn-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.dyn-inner .dyn-notes {
+  width: 100%;
+  max-width: unset;
+}
+
 
 /* ─── About ─────────────────────────────────────────────────────── */
 #about { border-top: 1.5px solid var(--border); }
@@ -637,7 +656,7 @@ footer {
   box-shadow: 4px 4px 0 var(--ink);
 }
 .grid-6 .cell       { width: 58px; height: 58px; font-size: 1.25rem; }
-.grid-6 .cage-label { font-size: 0.5rem; line-height: 1.1; }
+.grid-6 .cage-label { font-size: 0.54rem; line-height: 1.1; }
 
 /* ─── 5×5 Featured Puzzle ──────────────────────────────────────── */
 .play-divider {
@@ -646,7 +665,7 @@ footer {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin: 2.5rem 0 1.5rem;
+  margin: 1.2rem 0 0.8rem;
   font-family: var(--font-head);
   font-size: 0.82rem;
   font-weight: 600;
@@ -712,16 +731,15 @@ footer {
     grid-template-rows:    repeat(5, 59px);
   }
   .grid-5 .cell       { width: 59px; height: 59px; font-size: 1.1rem; }
-  .grid-5 .cage-label { font-size: 0.5rem; }
+  .grid-5 .cage-label { font-size: 0.55rem; }
 
   .grid-6 {
     grid-template-columns: repeat(6, 49px);
     grid-template-rows:    repeat(6, 49px);
   }
   .grid-6 .cell       { width: 49px; height: 49px; font-size: 0.95rem; }
-  .grid-6 .cage-label { font-size: 0.42rem; }
+  .grid-6 .cage-label { font-size: 0.48rem; }
 
-  .dyn-notes input  { width: 120px; }
   .dyn-notes textarea { font-size: 0.82rem; }
 }
 
@@ -861,23 +879,24 @@ footer {
   <div id="dyn-wrap" hidden>
     <div class="play-divider"><span id="dyn-title">—</span></div>
     <div class="puzzle-wrap">
-      <div class="grid" id="dyn-grid"></div>
-      <div class="controls">
-        <button onclick="dynClear()">Clear All</button>
-        <button onclick="dynClose()">↩ Choose Another</button>
-      </div>
-      <div class="puzzle-message hidden" id="dyn-msg"></div>
-      <p class="puzzle-hint">Click a cell, then type numbers &nbsp;·&nbsp; Arrow keys to navigate &nbsp;·&nbsp; Backspace to clear<br>
-        Cages list the exact digits inside. • cells are unknowns deduced from row &amp; column rules.</p>
-      <div class="dyn-notes">
-        <div class="dyn-notes-row">
-          <label for="dyn-quip">Quip <span class="notes-limit">12 chars max · shows on card</span></label>
-          <input id="dyn-quip" type="text" maxlength="12" placeholder="e.g. tricky!" oninput="dynSaveAnnotations()">
+      <p class="puzzle-hint">Click a cell · type numbers · Backspace to clear</p>
+      <div class="dyn-inner">
+        <div class="grid-with-clear">
+          <div class="grid" id="dyn-grid"></div>
+          <button class="btn-clear" onclick="dynClear()">CLEAR</button>
         </div>
-        <div class="dyn-notes-row">
-          <label for="dyn-comment">Comment <span class="notes-limit">1000 chars max</span></label>
-          <textarea id="dyn-comment" maxlength="1000" rows="3" placeholder="Notes about this puzzle…" oninput="dynSaveAnnotations()"></textarea>
+        <div class="puzzle-message hidden" id="dyn-msg"></div>
+        <div class="dyn-notes">
+          <div class="dyn-notes-row">
+            <label for="dyn-quip">Quip</label>
+            <input id="dyn-quip" type="text" maxlength="12" placeholder="e.g. tricky!" oninput="dynSaveAnnotations()">
+          </div>
+          <div class="dyn-notes-row">
+            <label for="dyn-comment">Comment</label>
+            <textarea id="dyn-comment" maxlength="1000" rows="2" placeholder="Notes about this puzzle…" oninput="dynSaveAnnotations()"></textarea>
+          </div>
         </div>
+        <button class="btn-clear" style="margin-top:0.5rem" onclick="dynClose()">Get Another</button>
       </div>
     </div>
   </div>
@@ -1061,7 +1080,7 @@ footer {
 <!-- ─── Puzzles ────────────────────────────────────────────────── -->
 <section id="puzzles">
   <div class="section-header"><h2>All Puzzles</h2></div>
-  <p class="section-sub">Click on any panel to play that puzzle.</p>
+  <p class="section-sub">Play in your browser, or download the PDF.</p>
 
   <div class="puzzle-table-wrap">
     <!-- Squibble perched on the table edge, legs dangling over the cards -->
