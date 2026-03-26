@@ -1157,6 +1157,16 @@ const puzzles = [
   { id: "g0024", size: "4×4", difficulty: "Easy",   file: "g0024.pdf" },
   { id: "g0025", size: "4×4", difficulty: "Medium", file: "g0025.pdf" },
   { id: "g0026", size: "4×4", difficulty: "Hard",   file: "g0026.pdf" },
+  { id: "g0046", size: "5×5", difficulty: "Medium", file: "g0046.pdf" },
+  { id: "g0055", size: "5×5", difficulty: "Medium", file: "g0055.pdf" },
+  { id: "g0067", size: "5×5", difficulty: "Expert", file: "g0067.pdf" },
+  { id: "g0077", size: "5×5", difficulty: "Expert", file: "g0077.pdf" },
+  { id: "g0086", size: "5×5", difficulty: "Easy",   file: "g0086.pdf" },
+  { id: "g0095", size: "5×5", difficulty: "Easy",   file: "g0095.pdf" },
+  { id: "g0108", size: "5×5", difficulty: "Medium", file: "g0108.pdf" },
+  { id: "g0115", size: "5×5", difficulty: "Medium", file: "g0115.pdf" },
+  { id: "g0126", size: "5×5", difficulty: "Medium", file: "g0126.pdf" },
+  { id: "g0134", size: "5×5", difficulty: "Medium", file: "g0134.pdf" },
 ];
 
 // ── Puzzle cage definitions (canonical notation → JS) ────────────────────────
@@ -1213,6 +1223,92 @@ const PUZZLE_DEFS = {
     { id:'a1', label:'1 1 1\n3 3 4\n4 4 4\n•', numbers:[1,1,1,3,3,4,4,4,4], cells:[[0,0],[0,1],[0,2],[1,0],[1,2],[2,2],[2,3],[3,1],[3,2],[3,3]] },
     { id:'a4', label:'••',                      numbers:null,               cells:[[0,3],[1,3]] },
     { id:'b2', label:'2 3 3\n•',                numbers:[2,3,3],            cells:[[1,1],[2,0],[2,1],[3,0]] },
+  ]},
+
+  // ── 5×5 puzzles ─────────────────────────────────────────────────────────────
+  'g0046': { N: 5, cages: [
+    { id:'a1', label:'•',             numbers:null,          cells:[[0,0]] },
+    { id:'a2', label:'1 2\n•',        numbers:[1,2],         cells:[[0,1],[1,0],[1,1]] },
+    { id:'a3', label:'1 2 5',         numbers:[5,2,1],       cells:[[0,2],[0,3],[1,3]] },
+    { id:'a5', label:'••\n••',        numbers:null,          cells:[[0,4],[1,4],[2,3],[2,4]] },
+    { id:'b3', label:'1 1 2\n4 4',    numbers:[4,1,2,4,1],   cells:[[1,2],[2,2],[3,2],[3,3],[3,4]] },
+    { id:'c1', label:'1 2 3\n4 •',    numbers:[1,2,3,4],     cells:[[2,0],[2,1],[3,0],[3,1],[4,0]] },
+    { id:'e2', label:'••\n••',        numbers:null,          cells:[[4,1],[4,2],[4,3],[4,4]] },
+  ]},
+  'g0055': { N: 5, cages: [
+    { id:'a1', label:'1 2 2\n4 4 5\n5 •', numbers:[1,2,2,4,4,5,5],  cells:[[0,0],[0,1],[0,2],[0,3],[1,3],[2,3],[2,4],[3,4]] },
+    { id:'a5', label:'••',                numbers:null,              cells:[[0,4],[1,4]] },
+    { id:'b1', label:'••',                numbers:null,              cells:[[1,0],[2,0]] },
+    { id:'b2', label:'1 2 •',             numbers:[1,2],             cells:[[1,1],[1,2],[2,2]] },
+    { id:'c2', label:'1 3 3\n4',          numbers:[3,1,4,3],         cells:[[2,1],[3,0],[3,1],[4,0]] },
+    { id:'d3', label:'1 2 4',             numbers:[2,1,4],           cells:[[3,2],[4,1],[4,2]] },
+    { id:'d4', label:'•••',               numbers:null,              cells:[[3,3],[4,3],[4,4]] },
+  ]},
+  'g0067': { N: 5, cages: [
+    { id:'a1', label:'•••',          numbers:null,        cells:[[0,0],[0,1],[1,0]] },
+    { id:'a3', label:'1 2 3\n4',     numbers:[2,3,4,1],   cells:[[0,2],[0,3],[0,4],[1,2]] },
+    { id:'b2', label:'2 3 5\n•',     numbers:[2,3,5],     cells:[[1,1],[2,0],[2,1],[2,2]] },
+    { id:'b4', label:'1 2 4\n5 •',   numbers:[1,2,4,5],   cells:[[1,3],[2,3],[3,2],[3,3],[4,3]] },
+    { id:'b5', label:'1 4 5\n•',     numbers:[1,4,5],     cells:[[1,4],[2,4],[3,4],[4,4]] },
+    { id:'d1', label:'3 4 5',        numbers:[4,5,3],     cells:[[3,0],[3,1],[4,0]] },
+    { id:'e2', label:'4 •',          numbers:[4],         cells:[[4,1],[4,2]] },
+  ]},
+  'g0077': { N: 5, cages: [
+    { id:'a1', label:'•••',            numbers:null,            cells:[[0,0],[0,1],[1,0]] },
+    { id:'a3', label:'1 2 2\n5 •',     numbers:[1,2,2,5],       cells:[[0,2],[0,3],[1,1],[1,2],[1,3]] },
+    { id:'a5', label:'1 2 4\n4 •',     numbers:[1,2,4,4],       cells:[[0,4],[1,4],[2,3],[2,4],[3,3]] },
+    { id:'c1', label:'4 •',            numbers:[4],             cells:[[2,0],[3,0]] },
+    { id:'c2', label:'1 2 3\n3 3 5\n5 •', numbers:[1,2,3,3,3,5,5], cells:[[2,1],[3,1],[3,2],[4,0],[4,1],[4,2],[4,3],[4,4]] },
+    { id:'c3', label:'1',              numbers:[1],             cells:[[2,2]] },
+    { id:'d5', label:'•',              numbers:null,            cells:[[3,4]] },
+  ]},
+  'g0086': { N: 5, cages: [
+    { id:'a1', label:'•••\n•••\n•',    numbers:null,          cells:[[0,0],[0,1],[1,0],[1,1],[2,0],[3,0],[4,0]] },
+    { id:'a3', label:'1 3 3\n5 5',     numbers:[5,3,1,5,3],   cells:[[0,2],[0,3],[1,2],[2,1],[2,2]] },
+    { id:'a5', label:'•',              numbers:null,          cells:[[0,4]] },
+    { id:'b4', label:'2 4 5\n•',       numbers:[2,4,5],       cells:[[1,3],[1,4],[2,4],[3,4]] },
+    { id:'c4', label:'1 1 2\n2 4 5',   numbers:[1,4,2,2,5,1], cells:[[2,3],[3,2],[3,3],[4,2],[4,3],[4,4]] },
+    { id:'d2', label:'1 4',            numbers:[1,4],         cells:[[3,1],[4,1]] },
+  ]},
+  'g0095': { N: 5, cages: [
+    { id:'a1', label:'1 2 2\n4 5',     numbers:[2,1,5,4,2],   cells:[[0,0],[0,1],[1,1],[1,2],[1,3]] },
+    { id:'a3', label:'3 3 4\n5 5',     numbers:[5,3,4,3,5],   cells:[[0,2],[0,3],[0,4],[1,4],[2,4]] },
+    { id:'b1', label:'3 3 4\n4 •',     numbers:[3,3,4,4],     cells:[[1,0],[2,0],[3,0],[3,1],[4,1]] },
+    { id:'c2', label:'1 2 2\n3 4',     numbers:[2,1,4,2,3],   cells:[[2,1],[2,2],[2,3],[3,2],[4,2]] },
+    { id:'d4', label:'••\n••',         numbers:null,          cells:[[3,3],[3,4],[4,3],[4,4]] },
+    { id:'e1', label:'•',              numbers:null,          cells:[[4,0]] },
+  ]},
+  'g0108': { N: 5, cages: [
+    { id:'a1', label:'•',              numbers:null,          cells:[[0,0]] },
+    { id:'a2', label:'1 2 4\n5 5 •',   numbers:[1,2,4,5,5],   cells:[[0,1],[0,2],[0,3],[0,4],[1,0],[1,1]] },
+    { id:'b3', label:'1 1 2\n2 3 3\n•', numbers:[1,1,2,2,3,3], cells:[[1,2],[2,2],[2,3],[3,3],[4,1],[4,2],[4,3]] },
+    { id:'b4', label:'•••\n••',        numbers:null,          cells:[[1,3],[1,4],[2,4],[3,4],[4,4]] },
+    { id:'c1', label:'••',             numbers:null,          cells:[[2,0],[2,1]] },
+    { id:'d1', label:'2 3 3\n5',       numbers:[2,3,5,3],     cells:[[3,0],[3,1],[3,2],[4,0]] },
+  ]},
+  'g0115': { N: 5, cages: [
+    { id:'a1', label:'•••',                       numbers:null,                       cells:[[0,0],[0,1],[1,0]] },
+    { id:'a3', label:'2 2 3\n3 3 3\n4 4 5\n5 5 5\n•', numbers:[2,2,3,3,3,3,4,4,5,5,5,5], cells:[[0,2],[0,3],[1,3],[2,0],[2,3],[3,0],[3,3],[3,4],[4,0],[4,1],[4,2],[4,3],[4,4]] },
+    { id:'a5', label:'•••',                       numbers:null,                       cells:[[0,4],[1,4],[2,4]] },
+    { id:'b2', label:'2 3 4',                     numbers:[3,2,4],                    cells:[[1,1],[1,2],[2,2]] },
+    { id:'c2', label:'2 5 •',                     numbers:[2,5],                      cells:[[2,1],[3,1],[3,2]] },
+  ]},
+  'g0126': { N: 5, cages: [
+    { id:'a1', label:'••\n••',         numbers:null,          cells:[[0,0],[0,1],[0,2],[1,2]] },
+    { id:'a4', label:'2 3 5\n•',       numbers:[2,3,5],       cells:[[0,3],[1,3],[2,2],[2,3]] },
+    { id:'a5', label:'2 5',            numbers:[5,2],         cells:[[0,4],[1,4]] },
+    { id:'b1', label:'3 4 5',          numbers:[4,5,3],       cells:[[1,0],[1,1],[2,0]] },
+    { id:'c2', label:'2 3 4',          numbers:[4,3,2],       cells:[[2,1],[3,0],[3,1]] },
+    { id:'c5', label:'1 2 4\n4 5 •',   numbers:[1,2,4,4,5],   cells:[[2,4],[3,2],[3,3],[3,4],[4,3],[4,4]] },
+    { id:'e1', label:'•••',            numbers:null,          cells:[[4,0],[4,1],[4,2]] },
+  ]},
+  'g0134': { N: 5, cages: [
+    { id:'a1', label:'••',             numbers:null,          cells:[[0,0],[1,0]] },
+    { id:'a2', label:'1 2 3\n3 5 5\n•', numbers:[1,2,3,3,5,5], cells:[[0,1],[0,2],[1,1],[1,2],[2,1],[2,2],[3,2]] },
+    { id:'a4', label:'••\n••',         numbers:null,          cells:[[0,3],[0,4],[1,4],[2,4]] },
+    { id:'b4', label:'1 1 2\n3 4 •',   numbers:[1,1,2,3,4],   cells:[[1,3],[2,3],[3,3],[3,4],[4,2],[4,3]] },
+    { id:'c1', label:'1 1 2\n2 3',     numbers:[1,1,2,2,3],   cells:[[2,0],[3,0],[3,1],[4,0],[4,1]] },
+    { id:'e5', label:'•',              numbers:null,          cells:[[4,4]] },
   ]},
 };
 
@@ -1332,6 +1428,51 @@ puzzles.forEach(p => {
   puzzleGrid.addEventListener('mouseover', () => anims.forEach(a => a.setAttribute('dur', '0.45s')));
   puzzleGrid.addEventListener('mouseout',  () => anims.forEach(a => a.setAttribute('dur', '1.8s')));
 })();
+
+// ── Player action logging ──────────────────────────────────────────────────────
+const LOGGER_URL = 'https://script.google.com/macros/s/AKfycbwOUE5QGjHStjcdQD7cA1g2s4EsNLNpAc1cRe2TZm_sjuQsRMkmxjf3NYqvDrP4aa5QtA/exec';
+
+// Persistent across browser restarts; fresh only if localStorage is cleared
+const nogginPlayerId = (() => {
+  const KEY = 'noggin-player-id';
+  let id = localStorage.getItem(KEY);
+  if (!id) { id = Math.random().toString(36).slice(2,10); localStorage.setItem(KEY, id); }
+  return id;
+})();
+
+// Fresh each page load — distinguishes two separate sittings by the same player
+const nogginSessionId = Math.random().toString(36).slice(2,10);
+
+let dynStartTime = null;
+
+// Cell coordinate convention: row 0–5 → a–f, col 0–5 → 1–6.
+// Always use cellName(r,c) when referring to a cell in logs, comments, or UI.
+// Never use numeric coordinates (0,0) in logs, display, or documentation.
+function cellName(r, c) { return 'abcdef'[r] + (c + 1); }
+
+// Transport: sendBeacon (non-blocking, survives page close) with fetch fallback.
+// Both are fire-and-forget — logging must never block or break the game.
+// NOTE: if we need guaranteed delivery (offline queuing), revisit this decision.
+// Offline events are currently dropped silently.
+function logEvent(event, extra = {}) {
+  const board = dynValues
+    ? dynValues.map(row => row.map(v => v === null ? '.' : String(v)).join('')).join(' ')
+    : '';
+  const payload = JSON.stringify({
+    puzzle:      dynMeta ? dynMeta.id : '',
+    event,
+    elapsed_sec: dynStartTime ? Math.round((Date.now() - dynStartTime) / 1000) : 0,
+    board,
+    player_id:   nogginPlayerId,
+    session_id:  nogginSessionId,
+    ...extra,
+  });
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(LOGGER_URL, payload);
+  } else {
+    fetch(LOGGER_URL, { method:'POST', mode:'no-cors', keepalive:true, body:payload }).catch(() => {});
+  }
+}
 
 // ── Progress persistence ───────────────────────────────────────────────────────
 const PROGRESS_KEY = 'noggin-progress';
@@ -1525,8 +1666,8 @@ touchKbd.addEventListener('pointerdown', (e) => {
   const val = btn.dataset.val;
   if (dynSelected) {
     const [r, c] = dynSelected;
-    if (val === 'del')                              { dynSetValue(r,c,null); dynValidate(); }
-    else if (val >= '1' && val <= String(dynN))     { dynSetValue(r,c,parseInt(val)); dynValidate(); }
+    if (val === 'del')                              { dynSetValue(r,c,null); logEvent('erase',{cell:cellName(r,c),value:''}); dynValidate(); }
+    else if (val >= '1' && val <= String(dynN))     { const v=parseInt(val); dynSetValue(r,c,v); logEvent('move',{cell:cellName(r,c),value:v}); dynValidate(); }
   } else if (selectedCell) {
     const [r, c] = selectedCell;
     if (val === 'del')                              { setCellValue(r,c,null); validateAll(); }
@@ -1540,8 +1681,8 @@ document.addEventListener('keydown', (e) => {
   // Dynamic panel input
   if (dynSelected) {
     const [r, c] = dynSelected;
-    if (e.key >= '1' && e.key <= String(dynN)) { dynSetValue(r,c,parseInt(e.key)); dynValidate(); e.preventDefault(); }
-    else if (e.key === 'Backspace' || e.key === 'Delete') { dynSetValue(r,c,null); dynValidate(); e.preventDefault(); }
+    if (e.key >= '1' && e.key <= String(dynN)) { const v=parseInt(e.key); dynSetValue(r,c,v); logEvent('move',{cell:cellName(r,c),value:v}); dynValidate(); e.preventDefault(); }
+    else if (e.key === 'Backspace' || e.key === 'Delete') { dynSetValue(r,c,null); logEvent('erase',{cell:cellName(r,c),value:''}); dynValidate(); e.preventDefault(); }
     else if (e.key === 'ArrowUp'    && r > 0)        { dynSelectCell(r-1, c); e.preventDefault(); }
     else if (e.key === 'ArrowDown'  && r < dynN-1)   { dynSelectCell(r+1, c); e.preventDefault(); }
     else if (e.key === 'ArrowLeft'  && c > 0)        { dynSelectCell(r, c-1); e.preventDefault(); }
@@ -1792,9 +1933,11 @@ function dynWin() {
       dynGetCell(r, c).classList.add('correct');
   dynShowMsg(`Solved! ${dynMeta.id} conquered. 🎉`, 'success-msg');
   markSolved(dynMeta.id);
+  logEvent('solve');
 }
 
 function dynClear() {
+  logEvent('clear');
   for (let r = 0; r < dynN; r++) for (let c = 0; c < dynN; c++) {
     dynSetValue(r, c, null);
     dynGetCell(r, c).classList.remove('error','correct','warn','cage-warn');
@@ -1803,6 +1946,7 @@ function dynClear() {
 }
 
 function dynClose() {
+  logEvent('quit');
   document.getElementById('dyn-wrap').hidden = true;
   dynSelected = null; dynMeta = null; dynDef = null;
   hideTouchKbd();
@@ -1875,6 +2019,8 @@ function loadPuzzle(meta) {
   wrap.hidden = false;
   setTimeout(() => wrap.scrollIntoView({behavior:'smooth', block:'center'}), 50);
   markTried(meta.id);
+  dynStartTime = Date.now();
+  logEvent('open');
 }
 
 
